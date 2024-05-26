@@ -1,4 +1,4 @@
-import express from 'express'
+import express, { NextFunction, Request, Response } from 'express'
 
 const app = express()
 
@@ -38,6 +38,47 @@ app.get("/api/json", (req: Request, res: Response) =>{
         tamanho: ["P", "M", "G"]
     })
 }) 
+
+app.get("/api/product/:id", (req:Request, res:Response) =>{
+    console.log(req.params)
+
+    const id = req.params.id
+
+    if(id === "1"){
+        const product = {
+            id: 1,
+            valor: 10,
+            product: "Boné"
+        }
+        return res.json(product)
+    }
+    else if(id === "2"){
+        const product = {
+            id:2,
+            valor: 30,
+            product: "Televisão"
+        }
+        return res.json(product)
+    }
+
+    return res.send("Produto não encontrado")
+})
+
+function checkUser(req: Request, res: Response, next:NextFunction){
+    if (req.params.id === "1") {
+        console.log("Pode seguir")
+        next()
+    } else{
+        console.log("Não pode seguir")
+    }
+}
+
+
+app.get("/api/user/:id/acess", checkUser, (req: Request, res: Response) =>{
+    return res.json({
+        msg: "Bem vindo"
+    })
+})
 
 app.listen(3000, () =>{
     console.log("Testado e funcionando com sucessooo")
